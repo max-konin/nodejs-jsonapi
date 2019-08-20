@@ -1,0 +1,42 @@
+{
+  "name": "nodejs-jsonapi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Max Konin",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "link-module-alias",
+    "preinstall": "command -v link-module-alias && link-module-alias clean || true"
+  },
+  "dependencies": {
+    "@gar/hapi-json-api": "^3.1.0",
+    "@hapi/hapi": "^18.3.2",
+    "bookshelf": "^0.15.1",
+    "boom": "^7.3.0",
+    "global": "^4.4.0",
+    "jsonapi-serializer": "^3.6.4",
+    "jsonapi-validator": "^3.0.5",
+    "knex": "^0.19.2",
+    "link-module-alias": "^1.2.0",
+    "lodash": "^4.17.15",
+    "pg": "^7.12.1",
+    "pluralize": "^8.0.0"
+  },
+  "devDependencies": {
+    "@hapi/code": "^6.0.0",
+    "@hapi/lab": "^20.1.0",
+    "eslint": "^6.2.1",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "factory-girl": "^5.0.4",
+    "prettier": "^1.16.4"
+  },
+  "_moduleAliases": {
+    "server": "./server.js",
+    "@api": "app/api",
+    "@models": "app/models",
+    "@config": "config",
+    "@serializers": "app/serializers",
+    "@lib": "lib"
+  }
+}
