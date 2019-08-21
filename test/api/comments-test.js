@@ -1,38 +1,36 @@
 'use strict';
 
-require('../test-helper');
-
 const { expect } = require('@hapi/code');
 const Lab = require('@hapi/lab');
 const { beforeEach, describe, it } = (exports.lab = Lab.script());
+const setupTests = require('../test-helper');
 const { factory } = require('factory-girl');
-const Post = require('@models/post');
+const Comment = require('@models/comment');
 const cleanDB = require('@test-support/db-cleaner');
 const { init } = require('server');
 
-describe('Posts endpoint', () => {
+describe('Comments endpoint', () => {
   let server;
   beforeEach(async () => {
     await cleanDB();
     server = await init();
   });
 
-  describe('GET /posts', async () => {
-    it('returns a list of posts', async () => {
-      const post = await factory.create('Post');
+  describe('GET /comments', async () => {
+    it('returns a list of comments', async () => {
+      const comment = await factory.create('Comment');
       const res = await server.inject({
         method: 'get',
-        url: '/posts'
+        url: '/comments'
       });
       expect(res.statusCode).to.equal(200);
       expect(res.result).to.equal({
         data: [
           {
-            id: post.get('id').toString(),
-            type: 'posts',
+            id: comment.get('id').toString(),
+            type: 'comments',
             attributes: {
-              title: post.get('title'),
-              body: post.get('body')
+              text: comment.get('text')
             }
           }
         ]
@@ -40,21 +38,20 @@ describe('Posts endpoint', () => {
     });
   });
 
-  describe('GET /posts/{postId}', async () => {
-    it('returns a post by id', async () => {
-      const post = await factory.create('Post');
+  describe('GET /comments/{commentId}', async () => {
+    it('returns a comment by id', async () => {
+      const comment = await factory.create('Comment');
       const res = await server.inject({
         method: 'get',
-        url: `/posts/${post.get('id')}`
+        url: `/comments/${comment.get('id')}`
       });
       expect(res.statusCode).to.equal(200);
       expect(res.result).to.equal({
         data: {
-          id: post.get('id').toString(),
-          type: 'posts',
+          id: comment.get('id').toString(),
+          type: 'comments',
           attributes: {
-            title: post.get('title'),
-            body: post.get('body')
+            text: comment.get('text')
           }
         }
       });
@@ -63,31 +60,30 @@ describe('Posts endpoint', () => {
     it('returns 404 status if ID is not correct', async () => {
       const res = await server.inject({
         method: 'get',
-        url: '/posts/999999'
+        url: '/comments/999999'
       });
       expect(res.statusCode).to.equal(404);
     });
   });
 
-  describe('POST /posts', async () => {
-    it('creates a post', async () => {
-      const postCountBefore = await Post.count();
+  describe('POST /comments', async () => {
+    it('creates a comment', async () => {
+      const commentCountBefore = await Comment.count();
       const res = await server.inject({
         method: 'post',
-        url: `/posts`,
+        url: `/comments`,
         payload: {
           data: {
-            type: 'posts',
+            type: 'comments',
             attributes: {
-              title: 'new post',
-              body: 'new post'
+              text: 'new comment'
             }
           }
         }
       });
       expect(res.statusCode).to.equal(201);
-      const postCountAfter = await Post.count();
-      expect(postCountAfter - postCountBefore).to.equal(1);
+      const commentCountAfter = await Comment.count();
+      expect(commentCountAfter - commentCountBefore).to.equal(1);
     });
   });
 });

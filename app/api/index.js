@@ -1,3 +1,6 @@
-const postResource = require('./posts');
+const buildJSONAPIResource = require('@lib/jsonapi-resource');
 
-module.exports = [...postResource];
+module.exports = [
+  ...buildJSONAPIResource('post'),
+  ...buildJSONAPIResource('comment')
+];
