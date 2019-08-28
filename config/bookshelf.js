@@ -1,10 +1,12 @@
 'use strict';
 
-var knexConfig = require('../knexfile');
-var { environment } = require('./application');
+const knexConfig = require('../knexfile');
+const { environment } = require('./application');
 
-var knex = require('knex')(knexConfig[environment]);
+const knex = require('knex')(knexConfig[environment]);
 
-var bookshelf = require('bookshelf')(knex);
+const bookshelf = require('bookshelf')(knex);
+
+bookshelf.plugin('bookshelf-case-converter-plugin');
 
 module.exports = bookshelf;

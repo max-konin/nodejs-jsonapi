@@ -18,7 +18,8 @@ describe('Comments endpoint', () => {
 
   describe('GET /comments', async () => {
     it('returns a list of comments', async () => {
-      const comment = await factory.create('Comment');
+      const post = await factory.create('Post');
+      const comment = await factory.create('Comment', { postId: post.id });
       const res = await server.inject({
         method: 'get',
         url: '/comments'
@@ -28,19 +29,38 @@ describe('Comments endpoint', () => {
         data: [
           {
             id: comment.get('id').toString(),
-            type: 'comments',
+            type: 'comment',
             attributes: {
               text: comment.get('text')
+            },
+            links: undefined,
+            meta: undefined,
+            relationships: {
+              post: {
+                data: {
+                  id: post.id.toString(),
+                  type: 'post'
+                },
+                links: undefined,
+                meta: undefined
+              }
             }
           }
-        ]
+        ],
+        included: undefined,
+        jsonapi: {
+          version: '1.0'
+        },
+        links: undefined,
+        meta: undefined
       });
     });
   });
 
   describe('GET /comments/{commentId}', async () => {
     it('returns a comment by id', async () => {
-      const comment = await factory.create('Comment');
+      const post = await factory.create('Post');
+      const comment = await factory.create('Comment', { postId: post.id });
       const res = await server.inject({
         method: 'get',
         url: `/comments/${comment.get('id')}`
@@ -49,11 +69,29 @@ describe('Comments endpoint', () => {
       expect(res.result).to.equal({
         data: {
           id: comment.get('id').toString(),
-          type: 'comments',
+          type: 'comment',
           attributes: {
             text: comment.get('text')
+          },
+          links: undefined,
+          meta: undefined,
+          relationships: {
+            post: {
+              data: {
+                id: post.id.toString(),
+                type: 'post'
+              },
+              links: undefined,
+              meta: undefined
+            }
           }
-        }
+        },
+        included: undefined,
+        jsonapi: {
+          version: '1.0'
+        },
+        links: undefined,
+        meta: undefined
       });
     });
 
@@ -69,14 +107,20 @@ describe('Comments endpoint', () => {
   describe('POST /comments', async () => {
     it('creates a comment', async () => {
       const commentCountBefore = await Comment.count();
+      const post = await factory.create('Post');
       const res = await server.inject({
         method: 'post',
         url: `/comments`,
         payload: {
           data: {
-            type: 'comments',
+            type: 'comment',
             attributes: {
               text: 'new comment'
+            },
+            relationships: {
+              post: {
+                data: { id: post.id, type: 'post' }
+              }
             }
           }
         }

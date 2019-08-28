@@ -29,13 +29,22 @@ describe('Posts endpoint', () => {
         data: [
           {
             id: post.get('id').toString(),
-            type: 'posts',
+            type: 'post',
             attributes: {
               title: post.get('title'),
               body: post.get('body')
-            }
+            },
+            links: undefined,
+            meta: undefined,
+            relationships: undefined
           }
-        ]
+        ],
+        included: undefined,
+        jsonapi: {
+          version: '1.0'
+        },
+        links: undefined,
+        meta: undefined
       });
     });
   });
@@ -51,12 +60,21 @@ describe('Posts endpoint', () => {
       expect(res.result).to.equal({
         data: {
           id: post.get('id').toString(),
-          type: 'posts',
+          type: 'post',
           attributes: {
             title: post.get('title'),
             body: post.get('body')
-          }
-        }
+          },
+          links: undefined,
+          meta: undefined,
+          relationships: undefined
+        },
+        included: undefined,
+        jsonapi: {
+          version: '1.0'
+        },
+        links: undefined,
+        meta: undefined
       });
     });
 
@@ -70,24 +88,56 @@ describe('Posts endpoint', () => {
   });
 
   describe('POST /posts', async () => {
-    it('creates a post', async () => {
-      const postCountBefore = await Post.count();
-      const res = await server.inject({
-        method: 'post',
-        url: `/posts`,
-        payload: {
-          data: {
-            type: 'posts',
-            attributes: {
-              title: 'new post',
-              body: 'new post'
+    describe('with valid attributes', function() {
+      it('creates a post', async () => {
+        const postCountBefore = await Post.count();
+        const res = await server.inject({
+          method: 'post',
+          url: `/posts`,
+          payload: {
+            data: {
+              type: 'post',
+              attributes: {
+                title: 'new post',
+                body: 'new post'
+              }
             }
           }
-        }
+        });
+        expect(res.statusCode).to.equal(201);
+        const postCountAfter = await Post.count();
+        expect(postCountAfter - postCountBefore).to.equal(1);
       });
-      expect(res.statusCode).to.equal(201);
-      const postCountAfter = await Post.count();
-      expect(postCountAfter - postCountBefore).to.equal(1);
+    });
+    describe('with invalid attributes', function() {
+      it('returns errors', async () => {
+        const postCountBefore = await Post.count();
+        const res = await server.inject({
+          method: 'post',
+          url: `/posts`,
+          payload: {
+            data: {
+              type: 'post',
+              attributes: {
+                body: 'new post'
+              }
+            }
+          }
+        });
+        expect(res.statusCode).to.equal(422);
+        const postCountAfter = await Post.count();
+        expect(postCountAfter - postCountBefore).to.equal(0);
+        expect(res.result).to.equal({
+          errors: [
+            {
+              title: "Title can't be blank",
+              source: {
+                pointer: '/data/attributes/title'
+              }
+            }
+          ]
+        });
+      });
     });
   });
 });

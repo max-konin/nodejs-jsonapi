@@ -1,8 +1,8 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi'),
-      config = require('@config/application'),
-      apiRoutes = require('@api')
+  config = require('@config/application'),
+  apiRoutes = require('@api');
 
 const server = Hapi.server({
   port: config.port,
@@ -23,7 +23,7 @@ exports.start = async () => {
   return server;
 };
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', err => {
   console.log(err);
   process.exit(1);
 });
