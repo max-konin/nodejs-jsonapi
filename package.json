@@ -18,7 +18,7 @@
     "json-api-serializer": "^2.0.4",
     "knex": "^0.19.2",
     "link-module-alias": "^1.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "pg": "^7.12.1",
     "pluralize": "^8.0.0",
     "validate.js": "^0.13.1"
