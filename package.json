@@ -16,7 +16,7 @@
     "boom": "^7.3.0",
     "global": "^4.4.0",
     "json-api-serializer": "^2.0.4",
-    "knex": "^0.19.2",
+    "knex": "^2.4.0",
     "link-module-alias": "^1.2.0",
     "lodash": "^4.17.15",
     "pg": "^7.12.1",
